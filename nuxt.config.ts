@@ -58,6 +58,8 @@ export default defineNuxtConfig({
             '정밀 탐지부터 비파괴 시공, 보험처리, 복원까지 원스톱. 24시간 365일 긴급출동.',
         },
         { property: 'og:type', content: 'website' },
+        // 네이버 서치어드바이저 사이트 소유확인
+        { name: 'naver-site-verification', content: '88db0bce2ca987b9f7734955cbdb2e1a7e91f288' },
       ],
       link: [
         {
