@@ -1,14 +1,15 @@
 /* ============================================================
    GET /api/quotes — 견적 신청 내역 조회 (관리자 전용)
    ------------------------------------------------------------
-   인증: x-admin-token 헤더(또는 ?token=) 가 runtimeConfig.adminToken 과 일치해야 함
-        운영에서는 환경변수 NUXT_ADMIN_TOKEN 로 반드시 변경하세요.
+   인증: x-admin-user / x-admin-token 헤더가 runtimeConfig 값과 일치해야 함
+        (기본 admin / admin1234, 운영에서 NUXT_ADMIN_USER·NUXT_ADMIN_TOKEN 로 변경 가능)
 ============================================================ */
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const token = getHeader(event, 'x-admin-token') || getQuery(event).token
+  const user = getHeader(event, 'x-admin-user')
+  const token = getHeader(event, 'x-admin-token')
 
-  if (!token || token !== config.adminToken) {
+  if (user !== config.adminUser || token !== config.adminToken) {
     setResponseStatus(event, 401)
     return { ok: false, error: 'unauthorized' }
   }

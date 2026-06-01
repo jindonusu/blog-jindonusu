@@ -19,8 +19,10 @@ export default defineNuxtConfig({
     },
   },
 
-  // 관리자 토큰 — 운영에서는 환경변수 NUXT_ADMIN_TOKEN 로 반드시 변경
+  // 관리자 로그인 (견적 문의확인 페이지 /quotes)
+  // 운영에서 바꾸려면 환경변수 NUXT_ADMIN_USER / NUXT_ADMIN_TOKEN 설정
   runtimeConfig: {
+    adminUser: 'admin',
     adminToken: 'admin1234',
   },
 

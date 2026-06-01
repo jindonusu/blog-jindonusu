@@ -4,6 +4,7 @@ useHead({
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 
+const userId = ref('')
 const token = ref('')
 const items = ref([])
 const loaded = ref(false)
@@ -18,20 +19,25 @@ function fmt(iso) {
 }
 
 async function load() {
-  if (!token.value) {
-    error.value = '관리자 비밀번호를 입력하세요.'
+  if (!userId.value || !token.value) {
+    error.value = '아이디와 비밀번호를 입력하세요.'
     return
   }
   error.value = ''
   loading.value = true
   try {
-    const res = await $fetch('/api/quotes', { headers: { 'x-admin-token': token.value } })
+    const res = await $fetch('/api/quotes', {
+      headers: { 'x-admin-user': userId.value, 'x-admin-token': token.value },
+    })
     items.value = res.items || []
     loaded.value = true
-    if (import.meta.client) sessionStorage.setItem('jindo_admin_token', token.value)
+    if (import.meta.client) {
+      sessionStorage.setItem('jindo_admin_user', userId.value)
+      sessionStorage.setItem('jindo_admin_token', token.value)
+    }
   } catch (e) {
     if (e?.statusCode === 401 || e?.response?.status === 401) {
-      error.value = '비밀번호가 올바르지 않습니다.'
+      error.value = '아이디 또는 비밀번호가 올바르지 않습니다.'
     } else {
       error.value = '내역을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'
     }
@@ -41,9 +47,11 @@ async function load() {
 }
 
 onMounted(() => {
-  const saved = sessionStorage.getItem('jindo_admin_token')
-  if (saved) {
-    token.value = saved
+  const u = sessionStorage.getItem('jindo_admin_user')
+  const t = sessionStorage.getItem('jindo_admin_token')
+  if (u && t) {
+    userId.value = u
+    token.value = t
     load()
   }
 })
@@ -57,12 +65,18 @@ onMounted(() => {
 
       <form class="login-row" @submit.prevent="load">
         <input
+          v-model="userId"
+          type="text"
+          placeholder="아이디"
+          autocomplete="username"
+        />
+        <input
           v-model="token"
           type="password"
-          placeholder="관리자 비밀번호"
+          placeholder="비밀번호"
           autocomplete="current-password"
         />
-        <button type="submit" :disabled="loading">{{ loading ? '불러오는 중…' : '조회' }}</button>
+        <button type="submit" :disabled="loading">{{ loading ? '불러오는 중…' : '로그인' }}</button>
       </form>
       <p v-if="error" class="error">{{ error }}</p>
     </div>
