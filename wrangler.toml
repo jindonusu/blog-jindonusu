@@ -1,0 +1,17 @@
+# Cloudflare Pages 배포 설정 (config-as-code)
+# 이 파일이 있으면 Cloudflare Pages 가 빌드 출력 경로와 호환성 플래그를 자동 적용합니다.
+name = "blog-jindonusu"
+compatibility_date = "2025-06-01"
+# Nuxt/Nitro 워커가 일부 Node API 를 사용하므로 nodejs_compat 필요
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+# ── 견적 신청 저장용 KV (관리자 조회 페이지 /quotes) ──────────────
+# 미설정이어도 사이트·빌드는 정상 동작합니다(접수만 실패 처리).
+# 운영에서 견적 저장을 켜려면:
+#   1) npx wrangler kv namespace create QUOTES      → id 발급
+#   2) 아래 3줄 주석 해제 후 id 입력
+#      (또는 Pages 대시보드 → Settings → Functions → KV namespace bindings 에서 QUOTES 연결)
+# [[kv_namespaces]]
+# binding = "QUOTES"
+# id = "여기에_네임스페이스_ID"
